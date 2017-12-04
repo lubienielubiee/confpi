@@ -1,0 +1,181 @@
+# File name : main.py
+#:kivy 1.10.0
+
+
+SM:
+	########################TLO JEST KOLOREM POKI CO, I NAKLAMALEM, CHYBA SIE NIE DA SCIAGAC TLA Z SERWERA I USTAWIAC W BIEGU
+	canvas.before:
+		Color: 
+			rgba: (0.306, 0.314, 0.4, 1)
+		Rectangle:
+			pos: self.pos
+			size: self.size
+		
+	id: sm
+	StartScreen:
+		id: ss
+		name: 'start'
+		manager: sm
+	LecturesScreen:
+		id: lcview
+		name: 'lcview'
+		manager: sm
+	MapScreen:
+		id: vmap
+		name: 'vmap'
+		manager: sm
+	SettingsScreen:
+		id: settings
+		name: 'settings'
+		manager: sm
+	MyLayout:
+		id: ml
+		name: 'my_layout'
+		manager: sm
+
+
+<StartScreen>: ###################### TU JEST CHYBA WSZYSTKO W MIARE OK, EWENTUALNIE MOZNA ZNALEZC JAK ZMIENIC WYGLAD PRZYCISKOW, BO TE SA SREDNIE
+	BoxLayout:
+		orientation: 'vertical'
+		spacing: dp(15)
+		padding:  [dp(50), dp(50)]
+		AsyncImage:
+			id: img
+			source: 'http://blackyk.ddns.net:52352/files/logo.png'
+
+		Button:
+			id: lectures_button
+			text: 'Lectures'
+			on_press:
+				root.manager.transition.direction = 'left'
+				root.manager.current = 'lcview'
+		
+		Button:
+			id: vmap_button
+			text: 'Venue Map'
+			on_press:
+				root.manager.transition.direction = 'left'
+				root.manager.current = 'vmap'
+
+		Button:
+			id: settings_button
+			text: "Settings"
+			on_press:
+				root.manager.transition.direction = 'left'
+				root.manager.current = 'settings'
+		
+		Button:
+			id: my_layout_button
+			text: "My Layout"
+			on_press:
+				root.manager.transition.direction = 'left'
+				root.manager.current = 'my_layout'
+		Button:
+			id: quit
+			text: "Quit"
+			on_release:
+				app.get_running_app().stop()
+
+
+<LecturesScreen>: ################ MOZNA DODAC LOGO NA GORZE, NIE TRZEBA
+	BoxLayout:
+		padding: [dp(5), 0]
+		orientation: "vertical"
+		LectureTree:
+			id: tv
+		BoxLayout:
+			size_hint: 1, 0.3
+			padding: [dp(50), dp(30)]
+			Button:
+				id: update_btn
+				text: "Update"
+				on_press:
+					tv.update()
+			Button:
+				id: back_btn
+				text: "Back"
+				on_press:
+					root.manager.transition.direction = 'right'
+					root.manager.current = 'start'
+			Button: ########## TU MOZNA DODAC FUNKCJE SPRAWDZANIA ZA ILE BEDZIE NASTEPNY WYKLAD, ALBO USUNAC TEN PRZYCISK
+				id: check_btn
+				text: "Check"
+				on_press:
+					pass
+
+
+<MapScreen>: 
+############## SCATTER ODPOWIADA ZA TO, ZE MOZNA ZMIENIAC ROZMIAR MAPKI - PROBLEM JEST TAKI ZE JEST "NAD" PRZYCISKIEM RESETOWANIA I JAK JEST OBRAZEK ZA DUZY TO SIE NIE DA KLIKNAC RESET
+##### PEWNIE SIE TRZEBA POBAWIC LAYOUTAMI
+	BoxLayout:
+		orientation: 'vertical'
+		spacing: dp(15)
+		padding:  [dp(20), dp(10)]
+		AsyncImage:
+			size_hint: 1, 0.2
+			id: img
+			source: 'http://blackyk.ddns.net:52352/files/logo.png'
+		Button:
+			size_hint: 1, 0.1
+			text: "Reset Map"
+			on_press:
+				sl.scale = 1.0
+				sl.rotation = 0.0
+				sl.pos = (0.0, 0.0)
+		StencilBox:
+			id: sb
+			size_hint: 1, .7
+			Scatter:
+				id: sl
+				auto_bring_to_front: False
+				AsyncImage:
+					id: img
+					size_hint: self.texture_size
+					pos: root.size[0]/2 - self.size[0]/2, root.size[1]/2*0.7 - self.size[1]/2
+					source: 'http://blackyk.ddns.net:52352/files/map.png'
+
+<TreeViewResource>:
+	height: btn.texture_size[1]+dp(5)
+	BoxLayout:
+		padding: [dp(2), dp(1)]
+		Label:
+			id: resource
+			text_size: self.size
+			halign: 'left'
+			text: root.resource_name
+			size_hint: 0.75, None
+		Button:
+			id: btn
+			text: "Download"
+			height: self.texture_size[1]
+			size_hint: 0.25, None
+			on_press:
+				root.download_file()
+				self.background_color = (0, 0.68, 0.09, 1.0)
+			
+
+
+<SettingsScreen>: ############# TRZEBA SIE ZASTANOWIC CZY W OGOLE Z TEGO BEDZIEMY KORZYSTAC
+	BoxLayout:
+		padding: [dp(50), dp(50)]
+		spacing: dp(15)
+		orientation: 'vertical'
+		
+		AsyncImage:
+			id: img
+			source: 'http://blackyk.ddns.net:52352/files/logo.png'
+		Button:
+			text: "Vibration"
+		Button:
+			text: "Notifications"
+
+		Button:
+			text: "Back"
+			on_press:
+				root.manager.transition.direction = 'right'
+				root.manager.current = 'start'
+
+
+
+
+			
